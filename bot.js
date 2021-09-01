@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const inlinereply = require('discord-reply');
 const client = new Discord.Client();
+const config = require("./config.json");
 const {
     MessageEmbed
 } = require('discord.js');
@@ -12,50 +13,100 @@ client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}`)
 });
 
+function getUserFromMention(mention) {
+	if (!mention) return;
+
+	if (mention.startsWith('<@') && mention.endsWith('>')) {
+		mention = mention.slice(2, -1);
+
+		if (mention.startsWith('!')) {
+			mention = mention.slice(1);
+		}
+
+		return client.users.cache.get(mention);
+	}
+}
 
 client.on("guildMemberAdd", async member => {
+	if (member.guild.id != "819676728661377064") return;
+	const accAge = Math.abs(Date.now() - member.user.createdAt);
+	const accDays = Math.ceil(accAge / (1000 * 60 * 60 * 24));
+		if (accDays <= 30) {
+		 const Embed = new MessageEmbed()
+			.setColor('#FF0000')
+			.setTitle("You were automatically removed from Luck's Chill-Out Zone:")
+			.setDescription("Sorry, your account must be 30 days or older to join this server.")
+			.setTimestamp()	
+			.setFooter('Reason: Automated action (Account age too young)', 'https://luckunstoppable7.com/media/logo.png');
+    member.send(Embed);
+	channel = client.channels.cache.get('865144587442061342')
+	const moment = require('moment');
+    const Embed2 = new MessageEmbed()
+        .setColor('#FF0000')
+        .setTitle("Member Automatically Kicked:")
+		.addField('**User:**', member, true)
+		.addField('**ID:**', `\`${member.id}\``, true)
+		.addField("**Joined Discord:**", `${moment(member.user.createdAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}`)
+        .setDescription("Reason: Automated action (Account age too young)")
+		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+    channel.send(Embed2);
+	setTimeout(function() {
+		member.kick();
+	}, 350)
+	} else   {
+	if (config.lockdown === "on") {
 	const moment = require('moment');
     const Embed = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle("You were automatically removed from Luck's Chill-Out Zone:")
         .setDescription("Sorry, our server is currently private. Try joining another time.")
 		.setTimestamp()	
-        .setFooter('Reason: Automated action: Secure mode active', 'https://luckunstoppable7.com/media/logo.png');
+        .setFooter('Reason: Automated action (Secure mode active)', 'https://luckunstoppable7.com/media/logo.png');
     member.send(Embed);
-		channel = client.channels.cache.get('')
+		channel = client.channels.cache.get('865144587442061342')
     const Embed2 = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle("Member Automatically Banned:")
-		.addField('User', member, true)
-		.addField('ID', `\`${member.id}\``, true)
-		.addField('Joined Discord on', `\`${moment(member.user.createdAt).format('MMM DD YYYY')}\``, true)
-        .setDescription("Reason: Automated action: Secure mode active")
+		.addField('**User:**', member, true)
+		.addField('**ID:**', `\`${member.id}\``, true)
+		.addField("**Joined Discord:**", `${moment(member.user.createdAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}`)
+        .setDescription("Reason: Automated action (Secure mode active)")
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
     channel.send(Embed2);
     setTimeout(function() {
         member.ban({
-            reason: 'Automated action: Secure mode active'
+            reason: 'Automated action (Secure mode active)'
         })
         setTimeout(function() {
             member.guild.members.unban(member.id)
         }, 86400000)
     }, 350);
 	
+	} else   {
+		return;
+	}}
 })
 
 client.on("message", (message) => {
-	
+	const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+	const command = args.shift().toLowerCase();
 	if (message.author.bot) return false;
-
     if (message.content.includes("@here") || message.content.includes("@everyone")) return false;
-
     if (message.mentions.has(client.user.id)) {
+	
     const Embed = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle("Luck's Chill-Out Zone Bot Help:")
-        .setDescription("`lu.help` - Shows this help message. You can also tag the bot.")
+		.setDescription("Hello  " + `${message.author.username}` + "! Below is the list of commands currently available. ")
+        .addField("`lu.help`", `Shows this help message. You can also tag the bot.`)
+		.addField("`lu.serverinfo`", `Displays some useful information about the server you're in.`)
+		.addField("`lu.memberinfo`", `Displays some useful information about your Discord account.`)
+		.addField("`lu.ping`", `Displays the bot and Discord API latency.`)
+		.addField("`lu.avatar`", `Displays your avatar. Tag another user to display their avatar instead.`)
 		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
@@ -66,32 +117,126 @@ client.on("message", (message) => {
     const Embed = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle(":x: This command is disabled!")
-        .setDescription("Sorry, robbing is not allowed in Luck's Chill-Out Zone.")
+		.setDescription("Sorry  " + `${message.author.username}` + "! Robbing is not allowed in Luck's Chill-Out Zone. ")
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
     message.lineReply(Embed);
-  }
+    }
   
     if (message.content === "pls bankrob") {
     const Embed = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle(":x: This command is disabled!")
-        .setDescription("Sorry, robbing is not allowed in Luck's Chill-Out Zone.")
+		.setDescription("Sorry  " + `${message.author.username}` + "! Robbing is not allowed in Luck's Chill-Out Zone. ")
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
     message.lineReply(Embed);
-  }
-    if (message.content === "lu.help") {
+    }
+	
+	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+    if (message.content.startsWith(config.prefix + "help")) {
     const Embed = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle("Luck's Chill-Out Zone Bot Help:")
-        .setDescription("`lu.help` - Shows this help message. You can also tag the bot.")
+		.setDescription("Hello  " + `${message.author.username}` + "! Below is the list of commands currently available. ")
+        .addField("`lu.help`", `Shows this help message. You can also tag the bot.`)
+		.addField("`lu.serverinfo`", `Displays some useful information about the server you're in.`)
+		.addField("`lu.memberinfo`", `Displays some useful information about your Discord account.`)
+		.addField("`lu.ping`", `Displays the bot and Discord API latency.`)
+		.addField("`lu.avatar`", `Displays your avatar. Tag another user to display their avatar instead.`)
 		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
     message.lineReply(Embed);
     }
+	
+    if(command === 'serverinfo') {
+	const ServerLogo = message.guild.iconURL();
+	const moment = require('moment');
+    const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(`Information About **${message.guild}:**`)
+		.setThumbnail(ServerLogo)
+		.addField("**Owner:**", `${message.guild.owner.user.tag}`, true)
+        .addField("**Date Created:**", `**${moment(message.guild.createdAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}**`)
+        .addField("**Members**", "` " + `${message.guild.members.cache.size}` + " `")
+        .addField("**Emoji's**", "` " + `${message.guild.emojis.cache.size}` + " `")
+        .addField("**Roles:**", "` " + `${message.guild.roles.cache.size}` + " `")
+        .addField("**Channels:**", "` " + `${message.guild.channels.cache.size}` + " `",)
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+    message.lineReply(Embed)
+    }
+	
+    if(command === 'memberinfo') {
+	const moment = require('moment');
+	const { guild, channel } = message
+	const user = message.mentions.users.first() || message.member.user
+	const member = guild.members.cache.get(user.id)
+	const MemberAvatar = user.avatarURL();
+	const roles = message.guild.roles.cache
+	const rolelist = member.roles.cache
+    .sort((a, b) => b.position - a.position)
+    .map(r => r)
+    .join(",");
+    if (rolelist.length > 1024) rolemap = "To many roles to display";
+    if (!rolelist) rolemap = "No roles";
+    const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(`Information About **${user.username}:**`)
+		.setThumbnail(MemberAvatar)
+		.addField("**Username:**", `${user.tag}`, true)
+		.addField("**Nickname:**", " " + `${member.nickname || 'None'}` + " ", true)
+		.addField("**Is bot?**", " " + `${user.bot}` + " ", true)
+		.addField("**Joined Discord:**", `${moment(user.createdAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}`)
+		.addField("**Joined Server:**", `${moment(member.joinedAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}`)
+        .addField("Roles: (" + `${member.roles.cache.size}` + ")" + "" , rolelist)
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+    message.lineReply(Embed)
+    }
+	
+    if(command === 'ping') {
+	message.channel.send('Please wait while we calculate the ping...').then((pingMessage) => {
+	const ping = pingMessage.createdTimestamp - message.createdTimestamp
+	pingMessage.delete()
+    const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.addField("**Bot Latency:**", "` " + `${ping}` + " ms`", true)
+		.addField("**Discord API Latency:**", "` " + `${client.ws.ping}` + " ms`", true)
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+    message.lineReply(Embed)
+    })
+  }
+  
+  	if (command === 'avatar') {	
+	if (args[0]) {
+	const tagcheck = getUserFromMention(args[0]);
+	if (!tagcheck) {
+	const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Invalid user!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You did not mention a valid user. ")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+	return message.lineReply(Embed);	
+	}
+  }	
+	const { guild, channel } = message
+	const user = message.mentions.users.first() || message.member.user
+	const member = guild.members.cache.get(user.id)
+	const MemberAvatar = user.avatarURL();
+	const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(`**${user.username}'s avatar:**`)
+		.setImage(user.displayAvatarURL({ dynamic: true }))
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+	message.lineReply(Embed)
+	
+	}
+
 });
 
-
-client.login("")
+client.login(config.token);
