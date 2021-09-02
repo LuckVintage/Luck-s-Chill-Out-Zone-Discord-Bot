@@ -99,7 +99,7 @@ client.on("message", (message) => {
     if (message.mentions.has(client.user.id)) {
 	
     const Embed = new MessageEmbed()
-        .setColor('#FF0000')
+        .setColor('#00FF00')
         .setTitle("Luck's Chill-Out Zone Bot Help:")
 		.setDescription("Hello  " + `${message.author.username}` + "! Below is the list of commands currently available. ")
         .addField("`lu.help`", `Shows this help message. You can also tag the bot.`)
@@ -107,6 +107,9 @@ client.on("message", (message) => {
 		.addField("`lu.memberinfo`", `Displays some useful information about your Discord account.`)
 		.addField("`lu.ping`", `Displays the bot and Discord API latency.`)
 		.addField("`lu.avatar`", `Displays your avatar. Tag another user to display their avatar instead.`)
+		.addField("`lu.lock`", `Locks the channel the command was sent in. Requires the manage messages permission.`)
+		.addField("`lu.unlock`", `Unlocks the channel the command was sent in. Requires the manage messages permission.`)
+		.addField("`lu.purge`", `Deletes the specified amount of messages. Requires the manage messages permission.`)
 		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
@@ -136,7 +139,7 @@ client.on("message", (message) => {
 	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
     if (message.content.startsWith(config.prefix + "help")) {
     const Embed = new MessageEmbed()
-        .setColor('#FF0000')
+        .setColor('#00FF00')
         .setTitle("Luck's Chill-Out Zone Bot Help:")
 		.setDescription("Hello  " + `${message.author.username}` + "! Below is the list of commands currently available. ")
         .addField("`lu.help`", `Shows this help message. You can also tag the bot.`)
@@ -144,6 +147,9 @@ client.on("message", (message) => {
 		.addField("`lu.memberinfo`", `Displays some useful information about your Discord account.`)
 		.addField("`lu.ping`", `Displays the bot and Discord API latency.`)
 		.addField("`lu.avatar`", `Displays your avatar. Tag another user to display their avatar instead.`)
+		.addField("`lu.lock`", `Locks the channel the command was sent in. Requires the manage messages permission.`)
+		.addField("`lu.unlock`", `Unlocks the channel the command was sent in. Requires the manage messages permission.`)
+		.addField("`lu.purge`", `Deletes the specified amount of messages. Requires the manage messages permission.`)
 		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
@@ -154,7 +160,7 @@ client.on("message", (message) => {
 	const ServerLogo = message.guild.iconURL();
 	const moment = require('moment');
     const Embed = new MessageEmbed()
-		.setColor('#FF0000')
+		.setColor('#00FF00')
 		.setTitle(`Information About **${message.guild}:**`)
 		.setThumbnail(ServerLogo)
 		.addField("**Owner:**", `${message.guild.owner.user.tag}`, true)
@@ -182,7 +188,7 @@ client.on("message", (message) => {
     if (rolelist.length > 1024) rolemap = "To many roles to display";
     if (!rolelist) rolemap = "No roles";
     const Embed = new MessageEmbed()
-		.setColor('#FF0000')
+		.setColor('#00FF00')
 		.setTitle(`Information About **${user.username}:**`)
 		.setThumbnail(MemberAvatar)
 		.addField("**Username:**", `${user.tag}`, true)
@@ -201,7 +207,7 @@ client.on("message", (message) => {
 	const ping = pingMessage.createdTimestamp - message.createdTimestamp
 	pingMessage.delete()
     const Embed = new MessageEmbed()
-		.setColor('#FF0000')
+		.setColor('#00FF00')
 		.addField("**Bot Latency:**", "` " + `${ping}` + " ms`", true)
 		.addField("**Discord API Latency:**", "` " + `${client.ws.ping}` + " ms`", true)
 		.setTimestamp()
@@ -228,7 +234,7 @@ client.on("message", (message) => {
 	const member = guild.members.cache.get(user.id)
 	const MemberAvatar = user.avatarURL();
 	const Embed = new MessageEmbed()
-		.setColor('#FF0000')
+		.setColor('#00FF00')
 		.setTitle(`**${user.username}'s avatar:**`)
 		.setImage(user.displayAvatarURL({ dynamic: true }))
 		.setTimestamp()
@@ -236,7 +242,86 @@ client.on("message", (message) => {
 	message.lineReply(Embed)
 	
 	}
-
+	
+	if(command === 'lock') {
+	const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Permission Denied!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You need the manage message permission to lock channels. ")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
+        if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.lineReply(Embed);
+		let role = message.guild.roles.cache.get("819953871249473577");
+    const Embed2 = new MessageEmbed()
+		.setColor('#00FF00')
+        .setTitle(":lock: Channel locked!")
+        .setDescription(`This channel has been locked by ${message.author.tag}.`)
+        .setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+        message.channel.updateOverwrite(role, {
+            SEND_MESSAGES: false
+        })
+    message.lineReply(Embed2)
+    }
+	
+	if(command === 'unlock') {
+	const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Permission Denied!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You need the manage message permission to unlock channels. ")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
+        if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.lineReply(Embed);
+		let role = message.guild.roles.cache.get("819953871249473577");
+    const Embed2 = new MessageEmbed()
+		.setColor('#00FF00')
+        .setTitle(":unlock: Channel unlocked!")
+        .setDescription(`This channel has been unlocked by ${message.author.tag}.`)
+        .setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+        message.channel.updateOverwrite(role, {
+            SEND_MESSAGES: null
+        })
+    message.lineReply(Embed2)
+	
+    }
+	
+	if(command === 'purge') {
+	const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Permission Denied!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You need the manage message permission to delete messages. ")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
+        if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.lineReply(Embed);
+        const amount = args[0]
+	const Embed2 = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Error!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You need to mention the amount of messages to delete. ")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+        if(!amount) return message.lineReply(Embed2);
+        if(isNaN(amount)) return message.lineReply(Embed2);
+	const Embed3 = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Error!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! The number of messages must be 99 or lower. ")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+        if(parseInt(amount) > 99) return message.lineReply(Embed3);
+        message.channel.bulkDelete(parseInt(amount)+1)
+	const Embed5 = new MessageEmbed()
+		.setColor('#00FF00')
+		.setTitle(":white_check_mark: Success!")
+		.setDescription(`Deleted ${amount} messages!`)
+		.setDescription(`${message.author.username}, you have deleted ${amount} messages!`)
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+	message.reply(Embed5)
+        .then(m => m.delete({timeout:5000}))
+	}
+	
 });
 
 client.login(config.token);
