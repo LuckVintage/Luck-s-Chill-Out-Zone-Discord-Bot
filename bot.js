@@ -56,26 +56,34 @@ client.on("guildMemberAdd", async member => {
 		member.kick();
 	}, 350)
 	} else   {
-	if (config.lockdown === "on") {
+		
+	fs = require('fs');	
+	fs.readFile('lockdown', 'utf8', (err, data) => {
+    if (err) {
+        console.log('Error reading lockdown file!');
+		console.log(err)
+    }
+
+    if (data == "on") {
 	const moment = require('moment');
     const Embed = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle("You were automatically removed from Luck's Chill-Out Zone:")
         .setDescription("Sorry, our server is currently private. Try joining another time.")
-		.setTimestamp()	
+        .setTimestamp()    
         .setFooter('Reason: Automated action (Secure mode active)', 'https://luckunstoppable7.com/media/logo.png');
     member.send(Embed);
-		channel = client.channels.cache.get('865144587442061342')
+        channel = client.channels.cache.get('865144587442061342')
     const Embed2 = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle("Member Automatically Banned:")
-		.addField('**User:**', member, true)
-		.addField('**ID:**', `\`${member.id}\``, true)
-		.addField("**Joined Discord:**", `${moment(member.user.createdAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}`)
+        .addField('**User:**', member, true)
+        .addField('**ID:**', `\`${member.id}\``, true)
+        .addField("**Joined Discord:**", `${moment(member.user.createdAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}`)
         .setDescription("Reason: Automated action (Secure mode active)")
-		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-		.setTimestamp()
-		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+        .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+        .setTimestamp()
+        .setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
     channel.send(Embed2);
     setTimeout(function() {
         member.ban({
@@ -85,10 +93,12 @@ client.on("guildMemberAdd", async member => {
             member.guild.members.unban(member.id)
         }, 86400000)
     }, 350);
-	
-	} else   {
-		return;
-	}}
+    
+    } else   {
+        return;
+    }
+})
+}
 })
 
 client.on("message", (message) => {
@@ -110,6 +120,8 @@ client.on("message", (message) => {
 		.addField("`lu.lock`", `Locks the channel the command was sent in. Requires the manage messages permission.`)
 		.addField("`lu.unlock`", `Unlocks the channel the command was sent in. Requires the manage messages permission.`)
 		.addField("`lu.purge`", `Deletes the specified amount of messages. Requires the manage messages permission.`)
+		.addField("`lu.lockdown-enable`", `Starts a server lockdown. Requires the administrator permission.`)
+		.addField("`lu.lockdown-disable`", `Ends the server lockdown. Requires the administrator permission.`)
 		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
@@ -150,6 +162,8 @@ client.on("message", (message) => {
 		.addField("`lu.lock`", `Locks the channel the command was sent in. Requires the manage messages permission.`)
 		.addField("`lu.unlock`", `Unlocks the channel the command was sent in. Requires the manage messages permission.`)
 		.addField("`lu.purge`", `Deletes the specified amount of messages. Requires the manage messages permission.`)
+		.addField("`lu.lockdown-enable`", `Starts a server lockdown. Requires the administrator permission.`)
+		.addField("`lu.lockdown-disable`", `Ends the server lockdown. Requires the administrator permission.`)
 		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
@@ -314,13 +328,58 @@ client.on("message", (message) => {
 	const Embed5 = new MessageEmbed()
 		.setColor('#00FF00')
 		.setTitle(":white_check_mark: Success!")
-		.setDescription(`Deleted ${amount} messages!`)
 		.setDescription(`${message.author.username}, you have deleted ${amount} messages!`)
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
 	message.reply(Embed5)
         .then(m => m.delete({timeout:5000}))
 	}
+	
+	if(command === 'lockdown-enable') {
+	const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Permission Denied!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You need the administrator permission to start a server lockdown. ")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
+        if(!message.member.hasPermission("ADMINISTRATOR")) return message.lineReply(Embed);
+	fs = require('fs');
+	fs.writeFile('lockdown', 'on', function (err) {
+	if (err) return console.log(err);
+	console.log('Lockdown mode enabled');
+	const Embed2 = new MessageEmbed()
+		.setColor('#00FF00')
+		.setTitle(":white_check_mark: Success!")
+		.setDescription(`${message.author.username}, you enabled lockdown mode!`)
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+	message.reply(Embed2)
+});
+
+    }
+	
+	if(command === 'lockdown-disable') {
+	const Embed = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Permission Denied!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You need the administrator permission to end a server lockdown. ")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
+        if(!message.member.hasPermission("ADMINISTRATOR")) return message.lineReply(Embed);
+	fs = require('fs');
+	fs.writeFile('lockdown', 'off', function (err) {
+	if (err) return console.log(err);
+	console.log('Lockdown mode disabled');
+	const Embed2 = new MessageEmbed()
+		.setColor('#00FF00')
+		.setTitle(":white_check_mark: Success!")
+		.setDescription(`${message.author.username}, you disabled lockdown mode!`)
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+	message.reply(Embed2)
+});
+
+    }
 	
 });
 
