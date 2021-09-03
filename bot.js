@@ -111,17 +111,9 @@ client.on("message", (message) => {
     const Embed = new MessageEmbed()
         .setColor('#00FF00')
         .setTitle("Luck's Chill-Out Zone Bot Help:")
-		.setDescription("Hello  " + `${message.author.username}` + "! Below is the list of commands currently available. ")
-        .addField("`lu.help`", `Shows this help message. You can also tag the bot.`)
-		.addField("`lu.serverinfo`", `Displays some useful information about the server you're in.`)
-		.addField("`lu.memberinfo`", `Displays some useful information about your Discord account.`)
-		.addField("`lu.ping`", `Displays the bot and Discord API latency.`)
-		.addField("`lu.avatar`", `Displays your avatar. Tag another user to display their avatar instead.`)
-		.addField("`lu.lock`", `Locks the channel the command was sent in. Requires the manage messages permission.`)
-		.addField("`lu.unlock`", `Unlocks the channel the command was sent in. Requires the manage messages permission.`)
-		.addField("`lu.purge`", `Deletes the specified amount of messages. Requires the manage messages permission.`)
-		.addField("`lu.lockdown-enable`", `Starts a server lockdown. Requires the administrator permission.`)
-		.addField("`lu.lockdown-disable`", `Ends the server lockdown. Requires the administrator permission.`)
+		.setDescription("Hello  " + `${message.author.username}` + "! Below is the list of commands categories currently available. ")
+        .addField("Moderation:", "`lu.help_moderation` for full command list.")
+		.addField("Miscellaneous:", "`lu.help_misc` for full command list.")
 		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
@@ -149,21 +141,44 @@ client.on("message", (message) => {
     }
 	
 	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
-    if (message.content.startsWith(config.prefix + "help")) {
+    if(command === 'help') {	
     const Embed = new MessageEmbed()
         .setColor('#00FF00')
         .setTitle("Luck's Chill-Out Zone Bot Help:")
-		.setDescription("Hello  " + `${message.author.username}` + "! Below is the list of commands currently available. ")
-        .addField("`lu.help`", `Shows this help message. You can also tag the bot.`)
-		.addField("`lu.serverinfo`", `Displays some useful information about the server you're in.`)
-		.addField("`lu.memberinfo`", `Displays some useful information about your Discord account.`)
-		.addField("`lu.ping`", `Displays the bot and Discord API latency.`)
-		.addField("`lu.avatar`", `Displays your avatar. Tag another user to display their avatar instead.`)
+		.setDescription("Hello  " + `${message.author.username}` + "! Below is the list of commands categories currently available. ")
+        .addField("Moderation:", "`lu.help_moderation` for full command list.")
+		.addField("Miscellaneous:", "`lu.help_misc` for full command list.")
+		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+    message.lineReply(Embed);
+    }
+	
+    if(command === 'help_moderation') {	
+    const Embed = new MessageEmbed()
+        .setColor('#00FF00')
+        .setTitle("Moderation Help:")
 		.addField("`lu.lock`", `Locks the channel the command was sent in. Requires the manage messages permission.`)
 		.addField("`lu.unlock`", `Unlocks the channel the command was sent in. Requires the manage messages permission.`)
 		.addField("`lu.purge`", `Deletes the specified amount of messages. Requires the manage messages permission.`)
 		.addField("`lu.lockdown-enable`", `Starts a server lockdown. Requires the administrator permission.`)
 		.addField("`lu.lockdown-disable`", `Ends the server lockdown. Requires the administrator permission.`)
+		.addField("`lu.lockdown-status`", `Displays the current server lockdown status.`)
+		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+    message.lineReply(Embed);
+    }
+	
+    if(command === 'help_misc') {	
+    const Embed = new MessageEmbed()
+        .setColor('#00FF00')
+        .setTitle("Miscellaneous Help:")
+        .addField("`lu.help`", `Shows the help menu. You can also tag the bot.`)
+		.addField("`lu.serverinfo`", `Displays some useful information about the server you're in.`)
+		.addField("`lu.memberinfo`", `Displays some useful information about your Discord account.`)
+		.addField("`lu.ping`", `Displays the bot and Discord API latency.`)
+		.addField("`lu.avatar`", `Displays your avatar. Tag another user to display their avatar instead.`)
 		.setThumbnail('https://luckunstoppable7.com/media/logo.png')
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
@@ -178,11 +193,11 @@ client.on("message", (message) => {
 		.setTitle(`Information About **${message.guild}:**`)
 		.setThumbnail(ServerLogo)
 		.addField("**Owner:**", `${message.guild.owner.user.tag}`, true)
-        .addField("**Date Created:**", `**${moment(message.guild.createdAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}**`)
-        .addField("**Members**", "` " + `${message.guild.members.cache.size}` + " `")
-        .addField("**Emoji's**", "` " + `${message.guild.emojis.cache.size}` + " `")
-        .addField("**Roles:**", "` " + `${message.guild.roles.cache.size}` + " `")
-        .addField("**Channels:**", "` " + `${message.guild.channels.cache.size}` + " `",)
+        .addField("**Date Created:**", `${moment(message.guild.createdAt).format('dddd, Do MMMM YYYY, h:mm:ss a')}`)
+		.addField("**Region:**", `${message.guild.region}`)
+        .addField("**Members:**", "` " + `${message.guild.members.cache.size}` + " `",true)
+        .addField("**Roles:**", "` " + `${message.guild.roles.cache.size}` + " `",true)
+        .addField("**Channels:**", "` " + `${message.guild.channels.cache.size}` + " `",true)
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
     message.lineReply(Embed)
@@ -266,6 +281,7 @@ client.on("message", (message) => {
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
         if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.lineReply(Embed);
 		let role = message.guild.roles.cache.get("819953871249473577");
+	message.delete({ timeout: 1000 });
     const Embed2 = new MessageEmbed()
 		.setColor('#00FF00')
         .setTitle(":lock: Channel locked!")
@@ -287,6 +303,7 @@ client.on("message", (message) => {
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
         if(!message.member.hasPermission("MANAGE_CHANNELS")) return message.lineReply(Embed);
 		let role = message.guild.roles.cache.get("819953871249473577");
+	message.delete({ timeout: 1000 });
     const Embed2 = new MessageEmbed()
 		.setColor('#00FF00')
         .setTitle(":unlock: Channel unlocked!")
@@ -296,7 +313,7 @@ client.on("message", (message) => {
         message.channel.updateOverwrite(role, {
             SEND_MESSAGES: null
         })
-    message.lineReply(Embed2)
+    message.reply(Embed2)
 	
     }
 	
@@ -339,47 +356,88 @@ client.on("message", (message) => {
 	const Embed = new MessageEmbed()
 		.setColor('#FF0000')
 		.setTitle(":x: Permission Denied!")
-		.setDescription("Sorry  " + `${message.author.username}` + "! You need the administrator permission to start a server lockdown. ")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You need the administrator permission to start a server lockdown.")
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
-        if(!message.member.hasPermission("ADMINISTRATOR")) return message.lineReply(Embed);
+    if(!message.member.hasPermission("ADMINISTRATOR")) return message.lineReply(Embed);
+	const Embed2 = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Error!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! Lockdown mode is already enabled.")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+	fs = require('fs');	
+	fs.readFile('lockdown', 'utf8', (err, data) => {
+    if (err) {
+        console.log('Error reading lockdown file!');
+		console.log(err)
+    }
+		if (data == "on") return message.lineReply(Embed2);
 	fs = require('fs');
 	fs.writeFile('lockdown', 'on', function (err) {
-	if (err) return console.log(err);
+	if (err) return console.log(err)});
 	console.log('Lockdown mode enabled');
-	const Embed2 = new MessageEmbed()
+	const Embed3 = new MessageEmbed()
 		.setColor('#00FF00')
 		.setTitle(":white_check_mark: Success!")
 		.setDescription(`${message.author.username}, you enabled lockdown mode!`)
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
-	message.reply(Embed2)
-});
-
-    }
+	message.lineReply(Embed3)})
+	
+	}
 	
 	if(command === 'lockdown-disable') {
 	const Embed = new MessageEmbed()
 		.setColor('#FF0000')
 		.setTitle(":x: Permission Denied!")
-		.setDescription("Sorry  " + `${message.author.username}` + "! You need the administrator permission to end a server lockdown. ")
+		.setDescription("Sorry  " + `${message.author.username}` + "! You need the administrator permission to end a server lockdown.")
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');	
-        if(!message.member.hasPermission("ADMINISTRATOR")) return message.lineReply(Embed);
+    if(!message.member.hasPermission("ADMINISTRATOR")) return message.lineReply(Embed);
+	const Embed2 = new MessageEmbed()
+		.setColor('#FF0000')
+		.setTitle(":x: Error!")
+		.setDescription("Sorry  " + `${message.author.username}` + "! Lockdown mode is already disabled.")
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+	fs = require('fs');	
+	fs.readFile('lockdown', 'utf8', (err, data) => {
+    if (err) {
+        console.log('Error reading lockdown file!');
+		console.log(err)
+    }
+		if (data == "off") return message.lineReply(Embed2);
 	fs = require('fs');
 	fs.writeFile('lockdown', 'off', function (err) {
-	if (err) return console.log(err);
+	if (err) return console.log(err)});
 	console.log('Lockdown mode disabled');
-	const Embed2 = new MessageEmbed()
+	const Embed3 = new MessageEmbed()
 		.setColor('#00FF00')
 		.setTitle(":white_check_mark: Success!")
 		.setDescription(`${message.author.username}, you disabled lockdown mode!`)
 		.setTimestamp()
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
-	message.reply(Embed2)
-});
-
+	message.lineReply(Embed3)})
+	
     }
+	
+    if(command === 'lockdown-status') {	
+	fs = require('fs');	
+	fs.readFile('lockdown', 'utf8', (err, data) => {
+    if (err) {
+        console.log('Error reading lockdown file!');
+		console.log(err)
+    }
+	const Embed = new MessageEmbed()
+		.setColor('#00FF00')
+		.setTitle("Lockdown Status:")
+		.setDescription(`Lockdown mode is currently ${data}.`)
+		.setTimestamp()
+		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
+	message.lineReply(Embed)});
+	
+	}
 	
 });
 
