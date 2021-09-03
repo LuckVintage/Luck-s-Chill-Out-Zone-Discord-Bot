@@ -11,6 +11,17 @@ client.on("ready", () => {
         type: "WATCHING",
     });
     console.log(`Logged in as ${client.user.tag}`)
+	fs = require('fs');	
+	fs.readFile('lockdown', 'utf8', (err, data) => {
+    if (err) {
+        console.log('Error reading lockdown file!');
+		console.log(err)
+    }
+
+    if (data == "on") {
+	console.log(`WARN: Lockdown mode is currently enabled.`)
+	}
+})
 });
 
 function getUserFromMention(mention) {
@@ -53,7 +64,8 @@ client.on("guildMemberAdd", async member => {
 		.setFooter('Luck\'s Chill-Out Zone', 'https://luckunstoppable7.com/media/logo.png');
     channel.send(Embed2);
 	setTimeout(function() {
-		member.kick();
+	let reason = `Automated action (Account age too young)`;
+	 member.kick(reason);
 	}, 350)
 	} else   {
 		
@@ -69,7 +81,7 @@ client.on("guildMemberAdd", async member => {
     const Embed = new MessageEmbed()
         .setColor('#FF0000')
         .setTitle("You were automatically removed from Luck's Chill-Out Zone:")
-        .setDescription("Sorry, our server is currently private. Try joining another time.")
+        .setDescription("Sorry, our server is currently private. Try joining another time or visit https://luckunstoppable7.com/why-cant-i-join-the-server for more information.")
         .setTimestamp()    
         .setFooter('Reason: Automated action (Secure mode active)', 'https://luckunstoppable7.com/media/logo.png');
     member.send(Embed);
