@@ -3,6 +3,8 @@ const inlinereply = require("discord-reply");
 const { MessageEmbed } = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config.json");
+client.on("error", (e) => console.error(e));
+client.on("warn", (e) => console.warn(e));
 
 client.on("ready", () => {
     client.user.setActivity("the server", {
@@ -123,7 +125,7 @@ client.on("guildMemberAdd", async (member) => {
 client.on("messageUpdate", (oldMessage, newMessage) => {
     if (oldMessage.guild.id != config.lcoz) return;
     if (oldMessage.author.bot) return;
-	if (oldMessage == newMessage) return;
+    if (oldMessage == newMessage) return;
     fs = require("fs");
     fs.readFile("logs", "utf8", (err, data) => {
         if (err) {
@@ -141,6 +143,225 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
                 .addField("**:pencil: Original message:**", oldMessage, true)
                 .addField("**:pencil: New message:**", newMessage, true)
                 .setThumbnail(oldMessage.author.displayAvatarURL({ dynamic: true }))
+                .setTimestamp()
+                .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("messageDelete", (message) => {
+    if (message.guild.id != config.lcoz) return;
+    if (message.author.bot) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed()
+                .setColor("#FF0000")
+                .setTitle(":wastebasket: Message Deleted:")
+                .addField("**Sent by:**", message.author)
+                .addField("**Channel:**", message.channel)
+                .addField("**:pencil: Message deleted:**", message, true)
+                .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
+                .setTimestamp()
+                .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("channelCreate", (newChannel) => {
+    if (newChannel.guild.id != config.lcoz) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed().setColor("#FF0000").setTitle(":new: Channel Created:").addField("**Channel:**", newChannel).setTimestamp().setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("channelDelete", (deletedChannel) => {
+    if (deletedChannel.guild.id != config.lcoz) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed()
+                .setColor("#FF0000")
+                .setTitle(":wastebasket: Channel Deleted:")
+                .addField("**Channel:**", deletedChannel.name)
+                .setTimestamp()
+                .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("channelUpdate", (oldChannel, newChannel) => {
+    if (oldChannel.guild.id != config.lcoz) return;
+    if (oldChannel.name == newChannel.name) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed()
+                .setColor("#FF0000")
+                .setTitle(":hammer: Channel Updated:")
+                .addField("**:pencil: Old name:**", oldChannel.name, true)
+                .addField("**:pencil: New name:**", newChannel, true)
+                .setTimestamp()
+                .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("roleCreate", (createdRole) => {
+    if (createdRole.guild.id != config.lcoz) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed().setColor("#FF0000").setTitle(":new: Role Created:").addField("**Role:**", createdRole).setTimestamp().setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("roleUpdate", (oldRole, newRole) => {
+    if (oldRole.guild.id != config.lcoz) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed()
+                .setColor("#FF0000")
+                .setTitle(":hammer: Role Updated:")
+                .addField("**:pencil: Old name:**", oldRole.name, true)
+                .addField("**:pencil: New name:**", newRole, true)
+                .setTimestamp()
+                .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("roleDelete", (deletedRole) => {
+    if (deletedRole.guild.id != config.lcoz) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed()
+                .setColor("#FF0000")
+                .setTitle(":wastebasket: Role Deleted:")
+                .addField("**Role:**", deletedRole.name)
+                .setTimestamp()
+                .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("emojiCreate", (createdEmoji) => {
+    if (createdEmoji.guild.id != config.lcoz) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed()
+                .setColor("#FF0000")
+                .setTitle(":new: Emoji Added:")
+                .addField("**Name:**", createdEmoji.name)
+                .addField("**Emoji:**", createdEmoji)
+                .setTimestamp()
+                .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("emojiUpdate", (oldEmoji, newEmoji) => {
+    if (oldEmoji.guild.id != config.lcoz) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed()
+                .setColor("#FF0000")
+                .setTitle(":hammer: Emoji Updated:")
+                .addField("**:pencil: Old name:**", oldEmoji.name, true)
+                .addField("**:pencil: New name:**", newEmoji.name, true)
+                .setTimestamp()
+                .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
+            channel.send(Embed);
+        }
+    });
+});
+
+client.on("emojiDelete", (deletedEmoji) => {
+    if (deletedEmoji.guild.id != config.lcoz) return;
+    fs = require("fs");
+    fs.readFile("logs", "utf8", (err, data) => {
+        if (err) {
+            console.log("Error reading logs file!");
+            console.log(err);
+        }
+
+        if (data == "on") {
+            channel = client.channels.cache.get(config.logchannel);
+            const Embed = new MessageEmbed()
+                .setColor("#FF0000")
+                .setTitle(":wastebasket: Emoji Deleted:")
+                .addField("**Emoji Name:**", deletedEmoji.name)
                 .setTimestamp()
                 .setFooter("Luck's Chill-Out Zone", "https://luckunstoppable7.com/media/logo.png");
             channel.send(Embed);
